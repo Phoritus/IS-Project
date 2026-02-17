@@ -77,7 +77,7 @@ Car-Damage-Detection/
 
 - **Base Model**: ResNet50 (pre-trained on ImageNet)
 - **Custom Classifier**: Fine-tuned for damage detection
-- **Input Size**: 280x280 pixels
+- **Input Size**: 224x224 pixels (matches ResNet50 pretrained input)
 - **Classes**: 6 damage categories
   - Front Breakage
   - Front Crushed
@@ -115,13 +115,17 @@ numpy>=2.2.4
 
 ## 🔧 Configuration
 
-### Model Configuration
+### Model Configuration (Optuna-Optimized)
 ```python
-# Model parameters
+# Best hyperparameters from Optuna tuning
 NUM_CLASSES = 6
-DROPOUT_RATE = 0.2
-INPUT_SIZE = (280, 280)
-BATCH_SIZE = 32
+DROPOUT_RATE = 0.1043
+LEARNING_RATE = 0.006998
+WEIGHT_DECAY = 1.374e-06
+OPTIMIZER = 'AdamW'
+EPOCHS = 23
+INPUT_SIZE = (224, 224)
+BATCH_SIZE = 128
 ```
 
 ### Supported File Formats

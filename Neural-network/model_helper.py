@@ -24,7 +24,7 @@ class CarDamageClassResNet50:
                 for param in self.model.layer4.parameters():
                     param.requires_grad = True
 
-                self.model.classifier = nn.Sequential(
+                self.model.fc = nn.Sequential(
                     nn.Dropout(drop_out),
                     nn.Linear(self.model.fc.in_features, num_class)
                 )
@@ -55,7 +55,7 @@ def load_model():
         # Import torch directly inside the function
         import torch
         
-        model = CarDamageClassResNet50(num_class=6, drop_out=0.2)
+        model = CarDamageClassResNet50(num_class=6, drop_out=0.10426241451085555)
 
         model_path = os.path.join(os.path.dirname(__file__), "model", "saved_model.pth")
         if os.path.exists(model_path):
@@ -86,7 +86,7 @@ def predict_from_image(image):
         
         # Prepare transforms
         transform = transforms.Compose([
-            transforms.Resize((280, 280)),
+            transforms.Resize((224, 224)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         ])
