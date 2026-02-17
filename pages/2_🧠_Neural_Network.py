@@ -147,7 +147,7 @@ st.markdown("## 2️⃣ Data Preprocessing & Augmentation")
 st.markdown("### 🖼️ Image Preprocessing")
 
 preprocessing_steps = {
-    "Resize": "ปรับขนาดรูปภาพเป็น 280×280 pixels เพื่อให้เป็น input size ที่สม่ำเสมอ",
+    "Resize": "ปรับขนาดรูปภาพเป็น 224×224 pixels ให้ตรงกับ input size ของ ResNet50 pretrained",
     "Random Horizontal Flip": "สุ่มกลับภาพแนวนอน เพื่อเพิ่มความหลากหลายของข้อมูล",
     "Random Rotation (10°)": "สุ่มหมุนภาพ ±10 องศา เพื่อจำลองมุมมองที่แตกต่าง",
     "Color Jitter": "ปรับ brightness, contrast, saturation สุ่ม เพื่อจำลองสภาพแสงต่างๆ",
@@ -169,8 +169,8 @@ st.markdown("### 📊 Data Split")
 st.markdown("""
 <div class="info-card">
     <p><strong>Train/Test Split:</strong> 75% / 25%</p>
-    <p><strong>Batch Size:</strong> 64</p>
-    <p><strong>DataLoader:</strong> <code>torch.utils.data.DataLoader</code> พร้อม shuffle สำหรับ training set</p>
+    <p><strong>Batch Size:</strong> 128 (optimized by Optuna)</p>
+    <p><strong>DataLoader:</strong> <code>torch.utils.data.DataLoader</code> พร้อม shuffle, <code>num_workers=4</code>, <code>pin_memory=True</code> สำหรับ GPU</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -179,10 +179,10 @@ st.markdown("")
 st.code("""
 # Image Transform Pipeline
 transform = transforms.Compose([
-    transforms.Resize((280, 280)),
+    transforms.Resize((224, 224)),  # Match ResNet50 pretrained input size
     transforms.RandomHorizontalFlip(),
     transforms.RandomRotation(10),
-    transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
+    transforms.ColorJitter(brightness=0.2, contrast=0.2),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], 
                          std=[0.229, 0.224, 0.225])
@@ -288,10 +288,13 @@ with m4_col1:
         <ul>
             <li><strong>Base Model:</strong> ResNet50 (pre-trained on ImageNet)</li>
             <li><strong>Partial Fine-tuning:</strong> Freeze ทุก layer ยกเว้น <code>layer4</code></li>
-            <li><strong>Custom Classifier:</strong> Dropout(0.2) → Linear(fc.in_features → num_classes)</li>
-            <li><strong>Optimizer:</strong> AdamW (lr=0.005)</li>
+            <li><strong>Custom Head:</strong> Dropout(0.1043) → Linear(fc.in_features → num_classes)</li>
+            <li><strong>Optimizer:</strong> AdamW (lr=0.006998, weight_decay=1.374e-06)</li>
             <li><strong>Loss:</strong> CrossEntropyLoss</li>
-            <li><strong>Epochs:</strong> 10</li>
+            <li><strong>Scheduler:</strong> CosineAnnealingLR</li>
+            <li><strong>Epochs:</strong> 23</li>
+            <li><strong>Batch Size:</strong> 128</li>
+            <li><strong>Input Size:</strong> 224×224</li>
         </ul>
         <p><strong>ทำไมเลือก ResNet50?</strong></p>
         <ul>
@@ -326,14 +329,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 tune_data = {
-    "Parameter": ["Learning Rate", "Dropout Rate", "Weight Decay", "Optimizer"],
-    "Search Space": ["[1e-5, 1e-2]", "[0.1, 0.7]", "[1e-6, 1e-2]", "[Adam, SGD, AdamW]"],
-    "Best Value": ["0.005", "0.2", "-", "AdamW"]
+    "Parameter": ["Learning Rate", "Dropout Rate", "Weight Decay", "Optimizer", "Epochs", "Batch Size"],
+    "Search Space": ["[1e-5, 1e-2]", "[0.1, 0.7]", "[1e-6, 1e-2]", "[Adam, SGD, AdamW]", "[10, 30]", "[16, 32, 64, 128]"],
+    "Best Value": ["0.006998", "0.1043", "1.374e-06", "AdamW", "23", "128"]
 }
 st.table(pd.DataFrame(tune_data))
 
 st.markdown("""
 - **Pruner:** MedianPruner — ตัด trial ที่ไม่มีแนวโน้มจะดีออกเร็ว
+- **Scheduler:** CosineAnnealingLR — ค่อยๆ ลด learning rate เพื่อ convergence ที่ดีขึ้น
 - **ผลลัพธ์:** ไฟล์โมเดลที่ export: `saved_model.pth`
 """)
 
@@ -403,7 +407,7 @@ Car Damage Image Dataset (ImageFolder)
     │
     ├── Hyper_tuning.ipynb
     │       │
-    │       └── Optuna Hyperparameter Search → Best: AdamW, lr=0.005, dropout=0.2
+    │       └── Optuna Hyperparameter Search → Best: AdamW, lr=0.006998, dropout=0.1043, epochs=23, batch=128
     │
     └── Export: saved_model.pth (ResNet50)
                     │
