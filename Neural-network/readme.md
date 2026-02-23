@@ -73,6 +73,10 @@ Car-Damage-Detection/
 
 5. **Open your browser** and navigate to `http://localhost:8501`
 
+## 📦 Dataset Source
+
+The car damage image dataset used in this project is from **[TQVCD (dxlabskku/TQVCD)](https://github.com/dxlabskku/TQVCD)**.
+
 ## 🧠 Model Architecture
 
 - **Base Model**: ResNet50 (pre-trained on ImageNet)

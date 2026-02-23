@@ -104,7 +104,7 @@ st.markdown("""
 <div class="info-card">
     <h3 style="margin-top:0;">📁 Healthcare Premium Dataset</h3>
     <p><strong>แหล่งที่มา:</strong> Codebasics Bootcamp</p>
-    <p><strong>ชื่อไฟล์:</strong> <code>premiums.xlsx</code></p>
+    <p><strong>ชื่อไฟล์:</strong> <code>dataset/premiums.xlsx</code></p>
     <p><strong>จุดประสงค์:</strong> นำมาใช้สร้างโมเดล Machine Learning เพื่อทำนายค่าเบี้ยประกันสุขภาพรายปี 
     (<code>annual_premium_amount</code>) โดยอิงจากข้อมูลส่วนตัว ข้อมูลสุขภาพ และข้อมูลทางการเงินของผู้เอาประกัน</p>
 </div>
@@ -237,8 +237,8 @@ with seg1:
     st.markdown("""
     <div class="model-card" style="border-left: 4px solid #2E8B57;">
         <h4>👶 Young Group (อายุ ≤ 25 ปี)</h4>
-        <p>ไฟล์: <code>premiums_young.xlsx</code></p>
-        <p>ไฟล์ (+ genetical risk): <code>premiums_young_with_gr.xlsx</code></p>
+        <p>ไฟล์: <code>dataset/premiums_young.xlsx</code></p>
+        <p>ไฟล์ (+ genetical risk): <code>dataset/premiums_young_with_gr.xlsx</code></p>
         <p>โมเดลที่ใช้ deploy: <strong>Random Forest</strong></p>
     </div>
     """, unsafe_allow_html=True)
@@ -247,8 +247,8 @@ with seg2:
     st.markdown("""
     <div class="model-card" style="border-left: 4px solid #4682B4;">
         <h4>🧑 Rest Group (อายุ > 25 ปี)</h4>
-        <p>ไฟล์: <code>premiums_rest.xlsx</code></p>
-        <p>ไฟล์ (+ genetical risk): <code>premiums_rest_with_gr.xlsx</code></p>
+        <p>ไฟล์: <code>dataset/premiums_rest.xlsx</code></p>
+        <p>ไฟล์ (+ genetical risk): <code>dataset/premiums_rest_with_gr.xlsx</code></p>
         <p>โมเดลที่ใช้ deploy: <strong>XGBoost</strong></p>
     </div>
     """, unsafe_allow_html=True)
@@ -319,7 +319,7 @@ with prod1:
         <p><strong>สำหรับ:</strong> Young Group (อายุ ≤ 25 ปี)</p>
         <p><strong>ไฟล์:</strong> <code>model_young.joblib</code></p>
         <p><strong>Scaler:</strong> <code>scaler_young.joblib</code></p>
-        <p><strong>Export จาก:</strong> <code>ml_premium_predict-young-gr.ipynb</code></p>
+        <p><strong>Export จาก:</strong> <code>05_EDA_model_young_with_GR.ipynb</code></p>
         <hr>
         <p><strong>ทำไมเลือก Random Forest?</strong></p>
         <ul>
@@ -338,7 +338,7 @@ with prod2:
         <p><strong>สำหรับ:</strong> Rest Group (อายุ > 25 ปี)</p>
         <p><strong>ไฟล์:</strong> <code>model_rest.joblib</code></p>
         <p><strong>Scaler:</strong> <code>scaler_rest.joblib</code></p>
-        <p><strong>Export จาก:</strong> <code>ml_premium_predict-rest-gr.ipynb</code></p>
+        <p><strong>Export จาก:</strong> <code>06_EDA_model_rest_with_GR.ipynb</code></p>
         <hr>
         <p><strong>ทำไมเลือก XGBoost?</strong></p>
         <ul>
@@ -376,19 +376,19 @@ st.markdown("## 📋 สรุปขั้นตอนทั้งหมด")
 
 st.markdown("""
 ```
-premiums.xlsx
+dataset/premiums.xlsx
     │
-    ├── data_segmentation.ipynb ──► แบ่งข้อมูลตามอายุ (≤25 / >25)
+    ├── 01_data_segmentation.ipynb ──► แบ่งข้อมูลตามอายุ (≤25 / >25)
     │       │
-    │       ├── premiums_young_with_gr.xlsx
-    │       └── premiums_rest_with_gr.xlsx
+    │       ├── dataset/premiums_young_with_gr.xlsx
+    │       └── dataset/premiums_rest_with_gr.xlsx
     │
-    ├── ml_premium_predict-young-gr.ipynb
+    ├── 05_EDA_model_young_with_GR.ipynb
     │       │
     │       ├── Cleaning → EDA → Feature Engineering → Model Training
     │       └── Export: model_young.joblib + scaler_young.joblib (Random Forest)
     │
-    └── ml_premium_predict-rest-gr.ipynb
+    └── 06_EDA_model_rest_with_GR.ipynb
             │
             ├── Cleaning → EDA → Feature Engineering → Model Training
             └── Export: model_rest.joblib + scaler_rest.joblib (XGBoost)

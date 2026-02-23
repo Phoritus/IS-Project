@@ -103,6 +103,7 @@ st.markdown("## 1️⃣ ที่มาของ Dataset")
 st.markdown("""
 <div class="info-card">
     <h3 style="margin-top:0;">📁 Car Damage Image Dataset</h3>
+    <p><strong>แหล่งที่มา:</strong> <a href="https://github.com/dxlabskku/TQVCD" target="_blank" style="color: #7dd3fc; text-decoration: underline;">TQVCD Dataset (dxlabskku/TQVCD)</a> — Dataset สำหรับการจำแนกความเสียหายของรถยนต์จากภาพถ่าย</p>
     <p><strong>ประเภทข้อมูล:</strong> รูปภาพรถยนต์ (Image Classification)</p>
     <p><strong>โครงสร้างข้อมูล:</strong> จัดเก็บด้วย <code>ImageFolder</code> structure (แยกรูปตาม subfolder = label)</p>
     <p><strong>จุดประสงค์:</strong> ใช้สร้างโมเดล Deep Learning เพื่อจำแนกประเภทและตำแหน่งความเสียหายของรถยนต์
